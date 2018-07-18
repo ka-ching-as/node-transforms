@@ -17,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/ka-ching-as/node-transformations/issues"
   },
-  "homepage": "https://github.com/ka-ching-as/node-transformations#readme"
+  "homepage": "https://github.com/ka-ching-as/node-transformations#readme",
+  "dependencies": {
+    "html-to-text": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/html-to-text": "^1.4.31"
+  }
 }

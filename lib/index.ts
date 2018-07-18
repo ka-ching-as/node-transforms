@@ -1,10 +1,5 @@
-/**
- * @Method: Outputs and returns 'Hello, World!'.
- * @Param {}
- * @Return {string}
- */
-export function sayHello () : string {
-    const hello = "Hello, World!"
-    console.log(hello)
-	return hello
-}
+import * as Shopify from "./ShopifyProductTransformation"
+import * as Kaching from "./KachingProductTransformation"
+
+export const ShopifyProductTransformation = Shopify
+export const KachingProductTransformation = Kaching

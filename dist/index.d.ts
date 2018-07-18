@@ -1,6 +1,4 @@
-/**
- * @Method: Outputs and returns 'Hello, World!'.
- * @Param {}
- * @Return {string}
- */
-export declare function sayHello(): string;
+import * as Shopify from "./ShopifyProductTransformation";
+import * as Kaching from "./KachingProductTransformation";
+export declare const ShopifyProductTransformation: typeof Shopify;
+export declare const KachingProductTransformation: typeof Kaching;
