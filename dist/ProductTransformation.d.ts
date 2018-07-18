@@ -4,6 +4,5 @@ export interface HttpHeaders {
 export interface ProductTransformation {
     isDeletionRequest(headers: HttpHeaders, body: any): boolean;
     productIdForDeletion(input: any): string;
-    transformProduct(input: any): any;
-    transformRepoProduct(input: any, channels: string[], markets: string[]): any;
+    transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>): Promise<void>;
 }

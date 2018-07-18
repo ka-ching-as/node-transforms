@@ -48,18 +48,18 @@ export class ShopifyProductTransformation implements ProductTransformation {
         return product
     }
 
-    transformRepoProduct(input: any, channels: string[], markets: string[]): any {
+    async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>) {
         const product = this.transformProduct(input)
         const metadata = { markets: {} as any, channels: {} as any }
-        for (const channel of channels) {
+        for (const channel of defaultChannels) {
             metadata.channels[channel] = true
         }
-        for (const market of markets) {
+        for (const market of defaultMarkets) {
             metadata.markets[market] = true
         }
         
         const obj = { product: product, metadata: metadata }
-        return obj
+        await callback(obj)
     }
 
     productIdForDeletion(input: any): string {

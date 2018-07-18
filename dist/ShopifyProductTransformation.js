@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -7,34 +15,32 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var htmlToText = __importStar(require("html-to-text"));
-var ShopifyProductTransformation = /** @class */ (function () {
-    function ShopifyProductTransformation() {
-    }
-    ShopifyProductTransformation.prototype.isDeletionRequest = function (headers, body) {
-        var topic = headers["x-shopify-topic"];
+const htmlToText = __importStar(require("html-to-text"));
+class ShopifyProductTransformation {
+    constructor() { }
+    isDeletionRequest(headers, body) {
+        const topic = headers["x-shopify-topic"];
         if (topic === "products/delete") {
             return true;
         }
         else {
             return false;
         }
-    };
+    }
     /**
      * @Method: Outputs and returns 'Hello, World!'.
      * @Param {}
      * @Return {string}
      */
-    ShopifyProductTransformation.prototype.transformProduct = function (input) {
-        var requiredFields = ["id", "title"];
-        for (var _i = 0, requiredFields_1 = requiredFields; _i < requiredFields_1.length; _i++) {
-            var field = requiredFields_1[_i];
+    transformProduct(input) {
+        const requiredFields = ["id", "title"];
+        for (const field of requiredFields) {
             if (!input[field]) {
-                throw new Error("Missing field '" + field + "'");
+                throw new Error(`Missing field '${field}'`);
             }
         }
-        var product = {};
-        product.id = "" + input.id;
+        const product = {};
+        product.id = `${input.id}`;
         product.name = input.title;
         if (input.image && input.image.src) {
             product.image_url = input.image.src;
@@ -43,37 +49,35 @@ var ShopifyProductTransformation = /** @class */ (function () {
             product.description = htmlToText.fromString(input.body_html);
         }
         if (input.variants && Array.isArray(input.variants) && input.variants.length > 0) {
-            var firstVariant = input.variants[0];
+            const firstVariant = input.variants[0];
             if (firstVariant.price) {
                 product.retail_price = Number(firstVariant.price);
             }
         }
         return product;
-    };
-    ShopifyProductTransformation.prototype.transformRepoProduct = function (input, channels, markets) {
-        var product = this.transformProduct(input);
-        var metadata = { markets: {}, channels: {} };
-        for (var _i = 0, channels_1 = channels; _i < channels_1.length; _i++) {
-            var channel = channels_1[_i];
-            metadata.channels[channel] = true;
-        }
-        for (var _a = 0, markets_1 = markets; _a < markets_1.length; _a++) {
-            var market = markets_1[_a];
-            metadata.markets[market] = true;
-        }
-        var obj = { product: product, metadata: metadata };
-        return obj;
-    };
-    ShopifyProductTransformation.prototype.productIdForDeletion = function (input) {
-        var requiredFields = ["id"];
-        for (var _i = 0, requiredFields_2 = requiredFields; _i < requiredFields_2.length; _i++) {
-            var field = requiredFields_2[_i];
+    }
+    transformRepoProduct(input, defaultChannels, defaultMarkets, callback) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const product = this.transformProduct(input);
+            const metadata = { markets: {}, channels: {} };
+            for (const channel of defaultChannels) {
+                metadata.channels[channel] = true;
+            }
+            for (const market of defaultMarkets) {
+                metadata.markets[market] = true;
+            }
+            const obj = { product: product, metadata: metadata };
+            yield callback(obj);
+        });
+    }
+    productIdForDeletion(input) {
+        const requiredFields = ["id"];
+        for (const field of requiredFields) {
             if (!input[field]) {
-                throw new Error("Missing field '" + field + "'");
+                throw new Error(`Missing field '${field}'`);
             }
         }
         return input.id;
-    };
-    return ShopifyProductTransformation;
-}());
+    }
+}
 exports.ShopifyProductTransformation = ShopifyProductTransformation;
