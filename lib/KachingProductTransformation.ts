@@ -1,6 +1,8 @@
 import { HttpHeaders, ProductTransformation } from "./ProductTransformation"
 
 export class KachingProductTransformation implements ProductTransformation {
+    constructor() {}
+    
     isDeletionRequest(headers: HttpHeaders, body: any): boolean {
         return false
     }

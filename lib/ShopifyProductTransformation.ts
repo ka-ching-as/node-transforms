@@ -2,6 +2,8 @@ import * as htmlToText from "html-to-text"
 import { HttpHeaders, ProductTransformation } from "./ProductTransformation"
 
 export class ShopifyProductTransformation implements ProductTransformation {
+    constructor() {}
+
     isDeletionRequest(headers: HttpHeaders, body: any): boolean {
         const topic = headers["x-shopify-topic"]
         if (topic === "products/delete") {
