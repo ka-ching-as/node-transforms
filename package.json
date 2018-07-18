@@ -1,0 +1,21 @@
+{
+  "name": "node-transformations",
+  "version": "1.0.0",
+  "description": "A collection of transformations for importing and exporting data to and from the Ka-ching system",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ka-ching-as/node-transformations.git"
+  },
+  "author": "Morten Bek Ditlevsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ka-ching-as/node-transformations/issues"
+  },
+  "homepage": "https://github.com/ka-ching-as/node-transformations#readme"
+}
