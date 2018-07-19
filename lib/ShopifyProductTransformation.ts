@@ -53,6 +53,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
 
         const isSimpleProduct = this.isSimpleProduct(input)
 
+        console.log("IS SIMPLE", isSimpleProduct)
 
         if (isSimpleProduct) {
             this.transformAsSimpleProduct(input, product)
