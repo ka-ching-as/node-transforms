@@ -52,7 +52,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
         }
 
         if (input.tags && typeof input.tags === "string") {
-            const resultTags: string[] = []
+            const resultTags: any = {}
             const tags: string[] = input.tags.split(",")
             for (const tag of tags) {
                 const trimmed = tag
@@ -62,9 +62,9 @@ export class ShopifyProductTransformation implements ProductTransformation {
                     .replace(/æ/g, "ae")
                     .replace(/å/g, "aa")
                     .replace(/\W/g, "_") || ""
-                resultTags.push(trimmed)                
+                resultTags[trimmed] = true                
             }
-            if (resultTags.length > 0) {
+            if (Object.keys(resultTags).length > 0) {
                 product.tags = resultTags
             }
         }
