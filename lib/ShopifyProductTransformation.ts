@@ -171,11 +171,10 @@ export class ShopifyProductTransformation implements ProductTransformation {
             }
             variant.id = `${variantInput.id}`
 
-
-            const price = Number(variant.price)
+            const price = Number(variantInput.price)
             let compareAt: number | undefined
-            if (variant.compare_at_price !== undefined && variant.compare_at_price !== null) {
-                compareAt = Number(variant.compare_at_price)
+            if (variantInput.compare_at_price !== undefined && variantInput.compare_at_price !== null) {
+                compareAt = Number(variantInput.compare_at_price)
             }
 
             if (compareAt !== undefined) {
