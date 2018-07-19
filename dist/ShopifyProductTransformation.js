@@ -57,8 +57,24 @@ class ShopifyProductTransformation {
         if (input.body_html) {
             product.description = htmlToText.fromString(input.body_html);
         }
+        if (input.tags && typeof input.tags === "string") {
+            const resultTags = [];
+            const tags = input.tags.split(",");
+            for (const tag of tags) {
+                const trimmed = tag
+                    .trim()
+                    .toLowerCase()
+                    .replace(/ø/g, "oe")
+                    .replace(/æ/g, "ae")
+                    .replace(/å/g, "aa")
+                    .replace(/\W/g, "_") || "";
+                resultTags.push(trimmed);
+            }
+            if (resultTags.length > 0) {
+                product.tags = resultTags;
+            }
+        }
         const isSimpleProduct = this.isSimpleProduct(input);
-        console.log("IS SIMPLE", isSimpleProduct);
         if (isSimpleProduct) {
             this.transformAsSimpleProduct(input, product);
         }
@@ -71,12 +87,26 @@ class ShopifyProductTransformation {
         const variants = (input.variants && Array.isArray(input.variants)) ? input.variants : [];
         if (variants.length > 0) {
             const firstVariant = variants[0];
-            if (firstVariant.price === undefined) {
+            if (firstVariant.price === undefined || firstVariant.price === null) {
                 throw new Error(`Missing field 'price'`);
             }
             else {
-                product.retail_price = Number(firstVariant.price);
+                const price = Number(firstVariant.price);
+                let compareAt;
+                if (firstVariant.compare_at_price !== undefined && firstVariant.compare_at_price !== null) {
+                    compareAt = Number(firstVariant.compare_at_price);
+                }
+                if (compareAt !== undefined) {
+                    product.retail_price = compareAt;
+                    product.sale_price = price;
+                }
+                else {
+                    product.retail_price = price;
+                }
             }
+        }
+        else {
+            throw new Error(`Missing variant entries in field 'variants'`);
         }
     }
     transformAsVariantProduct(input, product) {
@@ -116,6 +146,7 @@ class ShopifyProductTransformation {
             const optionKey = `option${dimensionCount}`;
             dimensionValueLookup[optionKey] = valueLookup;
             dimensionLookup[optionKey] = dimension.id;
+            dimension.values = dimensionValues;
             resultDimensions.push(dimension);
             dimensionCount++;
         }

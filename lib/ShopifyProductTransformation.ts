@@ -2,7 +2,7 @@ import * as htmlToText from "html-to-text"
 import { HttpHeaders, ProductTransformation } from "./ProductTransformation"
 
 export class ShopifyProductTransformation implements ProductTransformation {
-    constructor() {}
+    constructor() { }
 
     isDeletionRequest(headers: HttpHeaders, body: any): boolean {
         const topic = headers["x-shopify-topic"]
@@ -12,7 +12,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
             return false
         }
     }
-    
+
     productIdForDeletion(input: any): string {
         const requiredFields = ["id"]
 
@@ -38,22 +38,38 @@ export class ShopifyProductTransformation implements ProductTransformation {
                 throw new Error(`Missing field '${field}'`)
             }
         }
-    
+
         const product: any = {}
         product.id = `${input.id}`
         product.name = input.title
-    
+
         if (input.image && input.image.src) {
             product.image_url = input.image.src
         }
-    
+
         if (input.body_html) {
             product.description = htmlToText.fromString(input.body_html)
         }
 
-        const isSimpleProduct = this.isSimpleProduct(input)
+        if (input.tags && typeof input.tags === "string") {
+            const resultTags: string[] = []
+            const tags: string[] = input.tags.split(",")
+            for (const tag of tags) {
+                const trimmed = tag
+                    .trim()
+                    .toLowerCase()
+                    .replace(/ø/g, "oe")
+                    .replace(/æ/g, "ae")
+                    .replace(/å/g, "aa")
+                    .replace(/\W/g, "_") || ""
+                resultTags.push(trimmed)                
+            }
+            if (resultTags.length > 0) {
+                product.tags = resultTags
+            }
+        }
 
-        console.log("IS SIMPLE", isSimpleProduct)
+        const isSimpleProduct = this.isSimpleProduct(input)
 
         if (isSimpleProduct) {
             this.transformAsSimpleProduct(input, product)
@@ -66,13 +82,26 @@ export class ShopifyProductTransformation implements ProductTransformation {
 
     transformAsSimpleProduct(input: any, product: any) {
         const variants = (input.variants && Array.isArray(input.variants)) ? input.variants : []
-        if (variants.length > 0) {            
+        if (variants.length > 0) {
             const firstVariant = variants[0]
-            if (firstVariant.price === undefined) {
+            if (firstVariant.price === undefined || firstVariant.price === null) {
                 throw new Error(`Missing field 'price'`)
             } else {
-                product.retail_price = Number(firstVariant.price)
+                const price = Number(firstVariant.price)
+                let compareAt: number | undefined
+                if (firstVariant.compare_at_price !== undefined && firstVariant.compare_at_price !== null) {
+                    compareAt = Number(firstVariant.compare_at_price)
+                }
+
+                if (compareAt !== undefined) {
+                    product.retail_price = compareAt
+                    product.sale_price = price
+                } else {
+                    product.retail_price = price
+                }
             }
+        } else {
+            throw new Error(`Missing variant entries in field 'variants'`)
         }
     }
 
@@ -116,11 +145,12 @@ export class ShopifyProductTransformation implements ProductTransformation {
 
                 dimensionValues.push(dimensionValue)
                 valueLookup[value] = dimensionValue.id
-                valueCount ++
+                valueCount++
             }
             const optionKey = `option${dimensionCount}`
             dimensionValueLookup[optionKey] = valueLookup
             dimensionLookup[optionKey] = dimension.id
+            dimension.values = dimensionValues
             resultDimensions.push(dimension)
             dimensionCount++
         }
@@ -148,7 +178,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
             if (variantInput.option1 === null || variantInput.option1 === undefined) {
                 if (variantInput.title) {
                     variant.name = variantInput.title
-                }    
+                }
             }
 
             const dimensionValues: any = {}
@@ -158,7 +188,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
                     const valueLookup = dimensionValueLookup[optionKey]
                     if (!valueLookup) { continue }
                     const valueId = valueLookup[variantInput[optionKey]]
-                    if (valueId === null || valueId === undefined) {
+                    if (valueId === null ||  valueId === undefined) {
                         continue
                     }
                     const dimensionId = dimensionLookup[optionKey]
@@ -186,7 +216,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
     isSimpleProduct(input: any): boolean {
         const variants = (input.variants && Array.isArray(input.variants)) ? input.variants : []
 
-        if (variants.length > 1) {            
+        if (variants.length > 1) {
             return false
         }
         const options = (input.options && Array.isArray(input.options)) ? input.options : []
@@ -212,7 +242,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
         for (const market of defaultMarkets) {
             metadata.markets[market] = true
         }
-        
+
         const obj = { product: product, metadata: metadata }
         await callback(obj)
     }
