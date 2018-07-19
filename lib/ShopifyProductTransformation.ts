@@ -31,7 +31,6 @@ export class ShopifyProductTransformation implements ProductTransformation {
      * @Return {string}
      */
     transformProduct(input: any): any {
-        throw new Error(`Argh!`)
         const requiredFields = ["id", "title"]
 
         for (const field of requiredFields) {
@@ -58,10 +57,8 @@ export class ShopifyProductTransformation implements ProductTransformation {
 
         if (isSimpleProduct) {
             this.transformAsSimpleProduct(input, product)
-            product.name = "IS SIMPLE"
         } else {
             this.transformAsVariantProduct(input, product)
-            product.name = "IS NOT SO SIMPLE"
         }
 
         return product

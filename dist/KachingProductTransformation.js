@@ -10,8 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 class KachingProductTransformation {
     constructor() { }
+    // We do not (yet) support deletion through the native Ka-ching format 
     isDeletionRequest(headers, body) {
         return false;
+    }
+    productIdForDeletion(input) {
+        throw new Error("Internal error - deletion is not supported through the native format");
     }
     transformRepoProduct(input, defaultChannels, defaultMarkets, callback) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,15 +39,6 @@ class KachingProductTransformation {
                 throw new Error("Bad request - missing product or products key in body.");
             }
         });
-    }
-    productIdForDeletion(input) {
-        const requiredFields = ["id"];
-        for (const field of requiredFields) {
-            if (!input[field]) {
-                throw new Error(`Missing field '${field}'`);
-            }
-        }
-        return input.id;
     }
 }
 exports.KachingProductTransformation = KachingProductTransformation;

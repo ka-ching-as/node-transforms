@@ -9,5 +9,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Shopify = __importStar(require("./ShopifyProductTransformation"));
 const Kaching = __importStar(require("./KachingProductTransformation"));
+const Interface = __importStar(require("./ProductTransformation"));
 exports.ShopifyProductTransformation = Shopify;
 exports.KachingProductTransformation = Kaching;
+exports.ProductTransformation = Interface;
