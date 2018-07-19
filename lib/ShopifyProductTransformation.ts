@@ -31,6 +31,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
      * @Return {string}
      */
     transformProduct(input: any): any {
+        throw new Error(`Argh!`)
         const requiredFields = ["id", "title"]
 
         for (const field of requiredFields) {
