@@ -170,7 +170,21 @@ export class ShopifyProductTransformation implements ProductTransformation {
                 }
             }
             variant.id = `${variantInput.id}`
-            variant.retail_price = Number(variantInput.price)
+
+
+            const price = Number(variant.price)
+            let compareAt: number | undefined
+            if (variant.compare_at_price !== undefined && variant.compare_at_price !== null) {
+                compareAt = Number(variant.compare_at_price)
+            }
+
+            if (compareAt !== undefined) {
+                variant.retail_price = compareAt
+                variant.sale_price = price
+            } else {
+                variant.retail_price = price
+            }
+
             // It appears that variant titles are always composed
             // of their 'option' values. This is also the default
             // when leaving the name blank in Ka-ching and using options
