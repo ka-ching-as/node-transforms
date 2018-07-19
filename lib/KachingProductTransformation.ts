@@ -3,10 +3,15 @@ import { HttpHeaders, ProductTransformation } from "./ProductTransformation"
 export class KachingProductTransformation implements ProductTransformation {
     constructor() {}
 
+    // We do not (yet) support deletion through the native Ka-ching format 
     isDeletionRequest(headers: HttpHeaders, body: any): boolean {
         return false
     }
     
+    productIdForDeletion(input: any): string {
+        throw new Error("Internal error - deletion is not supported through the native format")
+    }
+
     async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>) {
         if (input.product) {
             await callback(input)
@@ -25,16 +30,5 @@ export class KachingProductTransformation implements ProductTransformation {
         } else {
             throw new Error("Bad request - missing product or products key in body.")
         }
-    }
-
-    productIdForDeletion(input: any): string {
-        const requiredFields = ["id"]
-
-        for (const field of requiredFields) {
-            if (!input[field]) {
-                throw new Error(`Missing field '${field}'`)
-            }
-        }
-        return input.id
     }
 }
