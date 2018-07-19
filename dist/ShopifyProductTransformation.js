@@ -58,7 +58,7 @@ class ShopifyProductTransformation {
             product.description = htmlToText.fromString(input.body_html);
         }
         if (input.tags && typeof input.tags === "string") {
-            const resultTags = [];
+            const resultTags = {};
             const tags = input.tags.split(",");
             for (const tag of tags) {
                 const trimmed = tag
@@ -68,9 +68,9 @@ class ShopifyProductTransformation {
                     .replace(/æ/g, "ae")
                     .replace(/å/g, "aa")
                     .replace(/\W/g, "_") || "";
-                resultTags.push(trimmed);
+                resultTags[trimmed] = true;
             }
-            if (resultTags.length > 0) {
+            if (Object.keys(resultTags).length > 0) {
                 product.tags = resultTags;
             }
         }
