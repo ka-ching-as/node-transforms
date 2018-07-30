@@ -1,5 +1,5 @@
 export interface HttpHeaders {
-    [header: string]: string | string[];
+    [header: string]: string | string[] | undefined;
 }
 
 export interface ProductTransformation {
