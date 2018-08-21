@@ -34,6 +34,16 @@ export class KachingProductTransformation implements ProductTransformation {
                 const obj: any = { product: product }
                 if (input.metadata) {
                     obj["metadata"] = input.metadata
+                } else if (defaultChannels.length > 0 || defaultMarkets.length > 0) {
+                    const channels: any = {}
+                    const markets: any = {}
+                    for (const channel of defaultChannels) {
+                        channels[channel] = true
+                    }
+                    for (const market of defaultMarkets) {
+                        markets[market] = true
+                    }
+                    obj["metadata"] = { channels: channels, markets: markets }
                 }
                 if (input.shops) {
                     obj["shops"] = input.shops
