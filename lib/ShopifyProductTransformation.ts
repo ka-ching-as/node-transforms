@@ -1,11 +1,13 @@
 import * as htmlToText from "html-to-text"
-import { HttpHeaders, ProductTransformation } from "./ProductTransformation"
+import * as express from "express"
+
+import { ProductTransformation } from "./ProductTransformation"
 
 export class ShopifyProductTransformation implements ProductTransformation {
     constructor() { }
 
-    isDeletionRequest(headers: HttpHeaders, body: any): boolean {
-        const topic = headers["x-shopify-topic"]
+    isDeletionRequest(request: express.Request): boolean {
+        const topic = request.headers["x-shopify-topic"]
         if (topic === "products/delete") {
             return true
         } else {
@@ -13,15 +15,16 @@ export class ShopifyProductTransformation implements ProductTransformation {
         }
     }
 
-    productIdForDeletion(input: any): string {
+    productIdsForDeletion(request: express.Request): string[] {
         const requiredFields = ["id"]
+        const input = request.body
 
         for (const field of requiredFields) {
             if (!input[field]) {
                 throw new Error(`Missing field '${field}'`)
             }
         }
-        return input.id
+        return [input.id]
     }
 
 

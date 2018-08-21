@@ -11,11 +11,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class KachingProductTransformation {
     constructor() { }
     // We do not (yet) support deletion through the native Ka-ching format 
-    isDeletionRequest(headers, body) {
+    isDeletionRequest(request) {
+        if (request.method === "DELETE") {
+            return true;
+        }
         return false;
     }
-    productIdForDeletion(input) {
-        throw new Error("Internal error - deletion is not supported through the native format");
+    productIdsForDeletion(request) {
+        const ids = request.query.ids;
+        if (typeof ids === "string") {
+            return ids.split(",");
+        }
+        const id = request.query.id;
+        if (typeof ids === "string") {
+            return [id];
+        }
+        return [];
     }
     transformRepoProduct(input, defaultChannels, defaultMarkets, callback) {
         return __awaiter(this, void 0, void 0, function* () {

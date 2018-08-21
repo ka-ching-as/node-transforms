@@ -1,8 +1,6 @@
-export interface HttpHeaders {
-    [header: string]: string | string[];
-}
+import * as express from "express";
 export interface ProductTransformation {
-    isDeletionRequest(headers: HttpHeaders, body: any): boolean;
-    productIdForDeletion(input: any): string;
+    isDeletionRequest(request: express.Request): boolean;
+    productIdsForDeletion(request: express.Request): string[];
     transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>): Promise<void>;
 }

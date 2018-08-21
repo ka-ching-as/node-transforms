@@ -18,8 +18,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const htmlToText = __importStar(require("html-to-text"));
 class ShopifyProductTransformation {
     constructor() { }
-    isDeletionRequest(headers, body) {
-        const topic = headers["x-shopify-topic"];
+    isDeletionRequest(request) {
+        const topic = request.headers["x-shopify-topic"];
         if (topic === "products/delete") {
             return true;
         }
@@ -27,14 +27,15 @@ class ShopifyProductTransformation {
             return false;
         }
     }
-    productIdForDeletion(input) {
+    productIdsForDeletion(request) {
         const requiredFields = ["id"];
+        const input = request.body;
         for (const field of requiredFields) {
             if (!input[field]) {
                 throw new Error(`Missing field '${field}'`);
             }
         }
-        return input.id;
+        return [input.id];
     }
     /**
      * @Method: Outputs and returns 'Hello, World!'.

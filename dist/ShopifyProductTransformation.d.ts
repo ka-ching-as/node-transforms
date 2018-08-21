@@ -1,8 +1,9 @@
-import { HttpHeaders, ProductTransformation } from "./ProductTransformation";
+import * as express from "express";
+import { ProductTransformation } from "./ProductTransformation";
 export declare class ShopifyProductTransformation implements ProductTransformation {
     constructor();
-    isDeletionRequest(headers: HttpHeaders, body: any): boolean;
-    productIdForDeletion(input: any): string;
+    isDeletionRequest(request: express.Request): boolean;
+    productIdsForDeletion(request: express.Request): string[];
     /**
      * @Method: Outputs and returns 'Hello, World!'.
      * @Param {}
