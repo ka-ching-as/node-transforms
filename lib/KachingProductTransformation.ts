@@ -14,11 +14,12 @@ export class KachingProductTransformation implements ProductTransformation {
     
     productIdsForDeletion(request: express.Request): string[] {
         const ids = request.query.ids
-        if (typeof ids === "string") {
-            return ids.split(",")
+        if (typeof ids === "string" && ids.length > 0) {
+            const idArray = ids.split(",")
+            return idArray
         }
         const id = request.query.id
-        if (typeof ids === "string") {
+        if (typeof id === "string" && id.length > 0) {
             return [id]
         }
         return []
