@@ -88,6 +88,7 @@ class ShopifyProductTransformation {
         const variants = (input.variants && Array.isArray(input.variants)) ? input.variants : [];
         if (variants.length > 0) {
             const firstVariant = variants[0];
+            product.barcode = firstVariant.barcode;
             if (firstVariant.price === undefined || firstVariant.price === null) {
                 throw new Error(`Missing field 'price'`);
             }
@@ -164,6 +165,7 @@ class ShopifyProductTransformation {
                 }
             }
             variant.id = `${variantInput.id}`;
+            variant.barcode = variantInput.barcode;
             const price = Number(variantInput.price);
             let compareAt;
             if (variantInput.compare_at_price !== undefined && variantInput.compare_at_price !== null) {
