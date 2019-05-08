@@ -3,14 +3,7 @@ import "cross-fetch/polyfill"
 import * as _ from "lodash"
 import * as path from "path"
 import ApolloClient, { gql } from "apollo-boost"
-import { StockTransformation } from "./StockTransformation"
-
-interface StockQueueEntry {
-    product_id: string
-    variant_id: string | null
-    location_id: string
-    count: number
-}
+import { StockQueueEntry, StockTransformation } from "./StockTransformation"
 
 interface InventoryLevelUpdate {
     available: number
@@ -19,7 +12,7 @@ interface InventoryLevelUpdate {
 }
 
 export class ShopifyStockTransformation implements StockTransformation {
-    async transformToStockImportData(input: any, configuration: any, callback: (stockData: any) => Promise<void>): Promise<void> {
+    async transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement: any) => Promise<void>): Promise<void> {
         console.info(`Transforming Shopify inventory level update: ${JSON.stringify(input)}`)
 
         if (!this.validateInput(input)) {

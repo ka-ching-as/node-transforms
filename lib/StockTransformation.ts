@@ -1,9 +1,10 @@
-export interface StockTransformation {
-    transformToStockImportData(input: any, configuration: any, callback: (stockData: any) => Promise<void>): Promise<void> 
+export interface StockQueueEntry {
+    product_id: string
+    variant_id: string | null
+    location_id: string
+    count: number
 }
 
-export class IdentityStockTransformation implements StockTransformation {
-    async transformToStockImportData(input: any, configuration: any, callback: (stockData: any) => Promise<void>): Promise<void> {
-        await callback(input)
-    }
+export interface StockTransformation {
+    transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement: any) => Promise<void>): Promise<void> 
 }

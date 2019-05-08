@@ -33,7 +33,8 @@ function watchForChanges() {
 }
 
 const modules = {
-    shopifyStock: "./dist/ShopifyStockTransformation"
+    shopifyStock: "./dist/ShopifyStockTransformation",
+    kachingStock: "./dist/KachingStockTransformation"
 };
 
 const ctx = repl.start({
