@@ -2,8 +2,6 @@ import * as express from "express"
 import { ProductTransformation } from "./ProductTransformation"
 
 export class KachingProductTransformation implements ProductTransformation {
-    constructor() {}
-
     // We do not (yet) support deletion through the native Ka-ching format 
     isDeletionRequest(request: express.Request): boolean {
         if (request.method === "DELETE") {

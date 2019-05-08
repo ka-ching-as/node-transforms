@@ -17,7 +17,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const htmlToText = __importStar(require("html-to-text"));
 class ShopifyProductTransformation {
-    constructor() { }
     isDeletionRequest(request) {
         const topic = request.headers["x-shopify-topic"];
         if (topic === "products/delete") {
