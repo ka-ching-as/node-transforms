@@ -1,7 +1,6 @@
 import * as express from "express";
 import { ProductTransformation } from "./ProductTransformation";
 export declare class ShopifyProductTransformation implements ProductTransformation {
-    constructor();
     isDeletionRequest(request: express.Request): boolean;
     productIdsForDeletion(request: express.Request): string[];
     /**

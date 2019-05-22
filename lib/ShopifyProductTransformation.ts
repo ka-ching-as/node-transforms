@@ -4,7 +4,6 @@ import * as express from "express"
 import { ProductTransformation } from "./ProductTransformation"
 
 export class ShopifyProductTransformation implements ProductTransformation {
-    constructor() { }
 
     isDeletionRequest(request: express.Request): boolean {
         const topic = request.headers["x-shopify-topic"]
@@ -26,7 +25,6 @@ export class ShopifyProductTransformation implements ProductTransformation {
         }
         return [input.id]
     }
-
 
     /**
      * @Method: Outputs and returns 'Hello, World!'.
