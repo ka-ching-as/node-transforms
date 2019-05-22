@@ -26,26 +26,26 @@ class ShopifyStockTransformation {
             console.info(`Transforming Shopify inventory level update: ${JSON.stringify(input)}`);
             if (!this.validateInput(input)) {
                 console.error(`Shopify stock input not valid: ${JSON.stringify(input)}`);
-                yield callback(null);
+                yield callback(undefined);
                 return;
             }
             const inventoryLevelUpdate = input;
             const stockLocationId = configuration.stock_location_map[`${inventoryLevelUpdate.location_id}`];
             if (!stockLocationId) {
                 console.error(`Unknown location id: ${inventoryLevelUpdate.location_id}`);
-                yield callback(null);
+                yield callback(undefined);
                 return;
             }
             const shopifyId = configuration.shopify_id;
             if (!shopifyId || typeof shopifyId !== "string") {
                 console.error(`Missing or invalid shopify id on configuration ${JSON.stringify(configuration)}`);
-                yield callback(null);
+                yield callback(undefined);
                 return;
             }
             const accessToken = configuration.shopify_access_token;
             if (!accessToken || typeof accessToken !== "string") {
                 console.error(`Missing or invalid shopify access token on configuration ${JSON.stringify(configuration)}`);
-                yield callback(null);
+                yield callback(undefined);
                 return;
             }
             const client = new apollo_boost_1.default({
@@ -75,7 +75,7 @@ class ShopifyStockTransformation {
                 });
                 if (!this.validateQueryResultData(result.data)) {
                     console.error(`Invalid result data from GraphQL query: ${JSON.stringify(query)}, result: ${JSON.stringify(result)}`);
-                    yield callback(null);
+                    yield callback(undefined);
                     return;
                 }
                 const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId);
@@ -84,7 +84,7 @@ class ShopifyStockTransformation {
             }
             catch (error) {
                 console.log(error);
-                callback(null);
+                callback(undefined);
                 return;
             }
         });

@@ -12,12 +12,12 @@ interface InventoryLevelUpdate {
 }
 
 export class ShopifyStockTransformation implements StockTransformation {
-    async transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement: any) => Promise<void>): Promise<void> {
+    async transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement?: StockQueueEntry) => Promise<void>): Promise<void> {
         console.info(`Transforming Shopify inventory level update: ${JSON.stringify(input)}`)
 
         if (!this.validateInput(input)) {
             console.error(`Shopify stock input not valid: ${JSON.stringify(input)}`)
-            await callback(null)
+            await callback(undefined)
             return
         }
 
@@ -26,21 +26,21 @@ export class ShopifyStockTransformation implements StockTransformation {
         const stockLocationId = configuration.stock_location_map[`${inventoryLevelUpdate.location_id}`]
         if (!stockLocationId) {
             console.error(`Unknown location id: ${inventoryLevelUpdate.location_id}`)
-            await callback(null)
+            await callback(undefined)
             return
         }
 
         const shopifyId = configuration.shopify_id
         if (!shopifyId || typeof shopifyId !== "string") {
             console.error(`Missing or invalid shopify id on configuration ${JSON.stringify(configuration)}`)
-            await callback(null)
+            await callback(undefined)
             return
         }
 
         const accessToken = configuration.shopify_access_token
         if (!accessToken || typeof accessToken !== "string") {
             console.error(`Missing or invalid shopify access token on configuration ${JSON.stringify(configuration)}`)
-            await callback(null)
+            await callback(undefined)
             return
         }
 
@@ -73,7 +73,7 @@ export class ShopifyStockTransformation implements StockTransformation {
             })
             if (!this.validateQueryResultData(result.data)) {
                 console.error(`Invalid result data from GraphQL query: ${JSON.stringify(query)}, result: ${JSON.stringify(result)}`)
-                await callback(null)
+                await callback(undefined)
                 return
             }
 
@@ -83,7 +83,7 @@ export class ShopifyStockTransformation implements StockTransformation {
             callback(queueElement)
         } catch (error) {
             console.log(error)
-            callback(null)
+            callback(undefined)
             return
         }
     }

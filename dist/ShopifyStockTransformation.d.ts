@@ -6,7 +6,7 @@ interface InventoryLevelUpdate {
     location_id: number;
 }
 export declare class ShopifyStockTransformation implements StockTransformation {
-    transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement: any) => Promise<void>): Promise<void>;
+    transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement?: StockQueueEntry) => Promise<void>): Promise<void>;
     validateInput(input: any): boolean;
     validateQueryResultData(data: any): boolean;
     stockQueueElement(inventoryLevelUpdate: InventoryLevelUpdate, resultData: any, stockLocationId: string): StockQueueEntry;
