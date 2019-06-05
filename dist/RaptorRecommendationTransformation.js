@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const parse = require("csv-parse");
 class RaptorRecommendationTransformation {
@@ -21,92 +13,86 @@ class RaptorRecommendationTransformation {
         }
         return false;
     }
-    transformToRecommendationImportData(input, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.isRaptorJSONFormat(input)) {
-                yield this.transformJSONToRecommendationImportData(input, callback);
-            }
-            else {
-                yield this.transformCSVToRecommendationImportData(input, callback);
-            }
-        });
+    async transformToRecommendationImportData(input, callback) {
+        if (this.isRaptorJSONFormat(input)) {
+            await this.transformJSONToRecommendationImportData(input, callback);
+        }
+        else {
+            await this.transformCSVToRecommendationImportData(input, callback);
+        }
     }
     /* Example data
     RecommendedId;Priority;ProductID
     -L6Q_LjeIwMbW7w-MU6T;1;-L6QZDxE6JJb9ifQAay5
     */
-    transformCSVToRecommendationImportData(input, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const output = yield this.parsePromise(input);
-            let fields = [];
-            let product = undefined;
-            for (const entry of output) {
-                if (fields.length === 0) {
-                    fields = entry;
-                    continue;
-                }
-                let productId = undefined;
-                let recommendedId = undefined;
-                for (const index in entry) {
-                    const value = entry[index];
-                    const key = fields[index];
-                    if (key === "ProductID") {
-                        productId = value;
-                    }
-                    else if (key === "RecommendedId") {
-                        recommendedId = value;
-                    }
-                }
-                if (productId === undefined || recommendedId === undefined) {
-                    continue;
-                }
-                const existingProductId = (product || {}).product_id;
-                if (productId !== existingProductId) {
-                    // Add product to updates and reset product
-                    if (product !== undefined) {
-                        yield callback(product);
-                    }
-                    product = { product_id: productId };
-                }
-                product.recommendations = (product.recommendations || []);
-                product.recommendations.push(recommendedId);
+    async transformCSVToRecommendationImportData(input, callback) {
+        const output = await this.parsePromise(input);
+        let fields = [];
+        let product = undefined;
+        for (const entry of output) {
+            if (fields.length === 0) {
+                fields = entry;
+                continue;
             }
-            if (product !== undefined && product.recommendations !== undefined) {
-                yield callback(product);
+            let productId = undefined;
+            let recommendedId = undefined;
+            for (const index in entry) {
+                const value = entry[index];
+                const key = fields[index];
+                if (key === "ProductID") {
+                    productId = value;
+                }
+                else if (key === "RecommendedId") {
+                    recommendedId = value;
+                }
             }
-        });
+            if (productId === undefined || recommendedId === undefined) {
+                continue;
+            }
+            const existingProductId = (product || {}).product_id;
+            if (productId !== existingProductId) {
+                // Add product to updates and reset product
+                if (product !== undefined) {
+                    await callback(product);
+                }
+                product = { product_id: productId };
+            }
+            product.recommendations = (product.recommendations || []);
+            product.recommendations.push(recommendedId);
+        }
+        if (product !== undefined && product.recommendations !== undefined) {
+            await callback(product);
+        }
     }
     /* Example data
     [ { "ProductId": "-L6QZDxE6JJb9ifQAay5", "Priority": "1", "RecommendedId": "-L6Q_LjeIwMbW7w-MU6T" }]
     */
-    transformJSONToRecommendationImportData(input, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!Array.isArray(input)) {
-                throw new Error("Expecting an array");
+    async transformJSONToRecommendationImportData(input, callback) {
+        if (!Array.isArray(input)) {
+            throw new Error("Expecting an array");
+        }
+        const array = input;
+        let product = undefined;
+        for (const entry of array) {
+            const productId = entry.ProductId;
+            const recommendedId = entry.RecommendedId;
+            if (productId === undefined || recommendedId === undefined) {
+                continue;
             }
-            const array = input;
-            let product = undefined;
-            for (const entry of array) {
-                const productId = entry.ProductId;
-                const recommendedId = entry.RecommendedId;
-                if (productId === undefined || recommendedId === undefined) {
-                    continue;
+            const existingProductId = (product || {}).product_id;
+            if (productId !== existingProductId) {
+                // Add product to updates and reset product
+                if (product !== undefined) {
+                    await callback(product);
                 }
-                const existingProductId = (product || {}).product_id;
-                if (productId !== existingProductId) {
-                    // Add product to updates and reset product
-                    if (product !== undefined) {
-                        yield callback(product);
-                    }
-                    product = { product_id: productId };
-                }
-                product.recommendations = (product.recommendations || []);
-                product.recommendations.push(recommendedId);
+                product = { product_id: productId };
             }
-            if (product !== undefined && product.recommendations !== undefined) {
-                yield callback(product);
-            }
-        });
+            product.recommendations = (product.recommendations || []);
+            product.recommendations.push(recommendedId);
+        }
+        if (product !== undefined && product.recommendations !== undefined) {
+            await callback(product);
+        }
     }
     isRaptorJSONFormat(input) {
         if (!Array.isArray(input)) {
@@ -122,39 +108,35 @@ class RaptorRecommendationTransformation {
         }
         return false;
     }
-    parsePromise(body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const output = yield this._parsePromise(body, { delimiter: "," });
-                if (output.length >= 1 && output[0].length === 1) {
-                    throw new Error("Parse error when parsing with , delimiter - no content");
-                }
-                return output;
+    async parsePromise(body) {
+        try {
+            const output = await this._parsePromise(body, { delimiter: "," });
+            if (output.length >= 1 && output[0].length === 1) {
+                throw new Error("Parse error when parsing with , delimiter - no content");
             }
-            catch (error) {
-                const output = yield this._parsePromise(body, { delimiter: ";" });
-                // In case the fallback parsing only has one column, rethrow the original error
-                if (output.length >= 1 && output[0].length === 1) {
-                    throw error;
-                }
-                return output;
+            return output;
+        }
+        catch (error) {
+            const output = await this._parsePromise(body, { delimiter: ";" });
+            // In case the fallback parsing only has one column, rethrow the original error
+            if (output.length >= 1 && output[0].length === 1) {
+                throw error;
             }
-        });
+            return output;
+        }
     }
-    _parsePromise(body, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                parse(body, options, (err, output) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else if (output) {
-                        resolve(output);
-                    }
-                    else {
-                        reject("Missing output");
-                    }
-                });
+    async _parsePromise(body, options) {
+        return new Promise((resolve, reject) => {
+            parse(body, options, (err, output) => {
+                if (err) {
+                    reject(err);
+                }
+                else if (output) {
+                    resolve(output);
+                }
+                else {
+                    reject("Missing output");
+                }
             });
         });
     }

@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -21,44 +13,43 @@ const _ = __importStar(require("lodash"));
 const path = __importStar(require("path"));
 const apollo_boost_1 = __importStar(require("apollo-boost"));
 class ShopifyStockTransformation {
-    transformToStockImportData(input, configuration, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.info(`Transforming Shopify inventory level update: ${JSON.stringify(input)}`);
-            if (!this.validateInput(input)) {
-                console.error(`Shopify stock input not valid: ${JSON.stringify(input)}`);
-                yield callback(undefined);
-                return;
+    async transformToStockImportData(input, configuration, callback) {
+        console.info(`Transforming Shopify inventory level update: ${JSON.stringify(input)}`);
+        if (!this.validateInput(input)) {
+            console.error(`Shopify stock input not valid: ${JSON.stringify(input)}`);
+            await callback(undefined);
+            return;
+        }
+        const inventoryLevelUpdate = input;
+        const stockLocationId = configuration.stock_location_map[`${inventoryLevelUpdate.location_id}`];
+        if (!stockLocationId) {
+            console.error(`Unknown location id: ${inventoryLevelUpdate.location_id}`);
+            await callback(undefined);
+            return;
+        }
+        const shopifyId = configuration.shopify_id;
+        if (!shopifyId || typeof shopifyId !== "string") {
+            console.error(`Missing or invalid shopify id on configuration ${JSON.stringify(configuration)}`);
+            await callback(undefined);
+            return;
+        }
+        const accessToken = configuration.shopify_access_token;
+        if (!accessToken || typeof accessToken !== "string") {
+            console.error(`Missing or invalid shopify access token on configuration ${JSON.stringify(configuration)}`);
+            await callback(undefined);
+            return;
+        }
+        const client = new apollo_boost_1.default({
+            uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
+            request: async (operation) => {
+                operation.setContext({
+                    headers: {
+                        "X-Shopify-Access-Token": accessToken,
+                    }
+                });
             }
-            const inventoryLevelUpdate = input;
-            const stockLocationId = configuration.stock_location_map[`${inventoryLevelUpdate.location_id}`];
-            if (!stockLocationId) {
-                console.error(`Unknown location id: ${inventoryLevelUpdate.location_id}`);
-                yield callback(undefined);
-                return;
-            }
-            const shopifyId = configuration.shopify_id;
-            if (!shopifyId || typeof shopifyId !== "string") {
-                console.error(`Missing or invalid shopify id on configuration ${JSON.stringify(configuration)}`);
-                yield callback(undefined);
-                return;
-            }
-            const accessToken = configuration.shopify_access_token;
-            if (!accessToken || typeof accessToken !== "string") {
-                console.error(`Missing or invalid shopify access token on configuration ${JSON.stringify(configuration)}`);
-                yield callback(undefined);
-                return;
-            }
-            const client = new apollo_boost_1.default({
-                uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
-                request: (operation) => __awaiter(this, void 0, void 0, function* () {
-                    operation.setContext({
-                        headers: {
-                            "X-Shopify-Access-Token": accessToken,
-                        }
-                    });
-                })
-            });
-            const query = apollo_boost_1.gql `{
+        });
+        const query = apollo_boost_1.gql `{
             inventoryItem(id: "gid://shopify/InventoryItem/${inventoryLevelUpdate.inventory_item_id}") {
               variant {
                 id,
@@ -69,25 +60,24 @@ class ShopifyStockTransformation {
               }
             }
           }`;
-            try {
-                const result = yield client.query({
-                    query: query
-                });
-                if (!this.validateQueryResultData(result.data)) {
-                    console.error(`Invalid result data from GraphQL query: ${JSON.stringify(query)}, result: ${JSON.stringify(result)}`);
-                    yield callback(undefined);
-                    return;
-                }
-                const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId);
-                console.info(`Resulting stock queue element: ${JSON.stringify(queueElement)}`);
-                callback(queueElement);
-            }
-            catch (error) {
-                console.log(error);
-                callback(undefined);
+        try {
+            const result = await client.query({
+                query: query
+            });
+            if (!this.validateQueryResultData(result.data)) {
+                console.error(`Invalid result data from GraphQL query: ${JSON.stringify(query)}, result: ${JSON.stringify(result)}`);
+                await callback(undefined);
                 return;
             }
-        });
+            const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId);
+            console.info(`Resulting stock queue element: ${JSON.stringify(queueElement)}`);
+            callback(queueElement);
+        }
+        catch (error) {
+            console.log(error);
+            callback(undefined);
+            return;
+        }
     }
     /* Example structure
     {
