@@ -1,6 +1,6 @@
 import * as express from "express"
 import * as parse from "csv-parse"
-import { RecommendationTransformation, RecommendationQueueEntry } from "./RecommendationTransformation"
+import { RecommendationTransformation, ProductRecommendation } from "./RecommendationTransformation"
 
 export class RaptorRecommendationTransformation implements RecommendationTransformation {
 
@@ -15,7 +15,7 @@ export class RaptorRecommendationTransformation implements RecommendationTransfo
         return false
     }
 
-    async transformToRecommendationImportData(input: any, callback: (recommendationQueueElement?: RecommendationQueueEntry) => Promise<void>): Promise<void> {
+    async transformToRecommendationImportData(input: any, callback: (productRecommendation?: ProductRecommendation) => Promise<void>): Promise<void> {
         if (this.isRaptorJSONFormat(input)) {
             await this.transformJSONToRecommendationImportData(input, callback)
         } else {
@@ -27,7 +27,7 @@ export class RaptorRecommendationTransformation implements RecommendationTransfo
     RecommendedId;Priority;ProductID
     -L6Q_LjeIwMbW7w-MU6T;1;-L6QZDxE6JJb9ifQAay5
     */
-    private async transformCSVToRecommendationImportData(input: any, callback: (recommendationQueueElement?: RecommendationQueueEntry) => Promise<void>): Promise<void> {
+    private async transformCSVToRecommendationImportData(input: any, callback: (productRecommendation?: ProductRecommendation) => Promise<void>): Promise<void> {
         const output = await this.parsePromise(input)
         let fields: string[] = []
 
@@ -75,7 +75,7 @@ export class RaptorRecommendationTransformation implements RecommendationTransfo
     /* Example data
     [ { "ProductId": "-L6QZDxE6JJb9ifQAay5", "Priority": "1", "RecommendedId": "-L6Q_LjeIwMbW7w-MU6T" }]
     */
-    private async transformJSONToRecommendationImportData(input: any, callback: (recommendationQueueElement?: RecommendationQueueEntry) => Promise<void>): Promise<void> {
+    private async transformJSONToRecommendationImportData(input: any, callback: (productRecommendation?: ProductRecommendation) => Promise<void>): Promise<void> {
         if (!Array.isArray(input)) {
             throw new Error("Expecting an array")
         }

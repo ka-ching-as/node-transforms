@@ -1,6 +1,6 @@
 import * as express from "express"
 import * as _ from "lodash"
-import { RecommendationTransformation, RecommendationQueueEntry } from "./RecommendationTransformation"
+import { RecommendationTransformation, ProductRecommendation } from "./RecommendationTransformation"
 
 export class KachingRecommendationTransformation implements RecommendationTransformation {
 
@@ -18,7 +18,7 @@ export class KachingRecommendationTransformation implements RecommendationTransf
         ]
     }
     */
-   async transformToRecommendationImportData(input: any, callback: (recommendationQueueElement?: RecommendationQueueEntry) => Promise<void>): Promise<void> {
+   async transformToRecommendationImportData(input: any, callback: (productRecommendation?: ProductRecommendation) => Promise<void>): Promise<void> {
        await callback(_.cloneDeep(input))
    }
 }
