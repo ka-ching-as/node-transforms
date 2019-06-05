@@ -9,7 +9,14 @@ export class KachingRecommendationTransformation implements RecommendationTransf
         return !_.isNil(request.body.products) || !_.isNil(request.body.product_id)
     }
 
-    /* Example data
+    /* 
+    Example data single
+    {
+        integration_id: "similar",
+        product_id: "abc",
+        recommendations: ["xyz", "123"]
+    }
+    Example data multiple
     {
         "products": [
             {
@@ -20,6 +27,12 @@ export class KachingRecommendationTransformation implements RecommendationTransf
     }
     */
    async transformToRecommendationImportData(input: any, callback: (productRecommendation?: ProductRecommendation) => Promise<void>): Promise<void> {
-       await callback(_.cloneDeep(input))
+        if (_.isNil(input.product_id)) {
+            for (const product of input.products) {
+                await callback(product)
+            }
+        } else {
+            await callback(_.cloneDeep(input))
+        }
    }
 }

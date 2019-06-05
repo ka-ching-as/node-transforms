@@ -13,7 +13,14 @@ class KachingRecommendationTransformation {
     canHandleRequest(request) {
         return !_.isNil(request.body.products) || !_.isNil(request.body.product_id);
     }
-    /* Example data
+    /*
+    Example data single
+    {
+        integration_id: "similar",
+        product_id: "abc",
+        recommendations: ["xyz", "123"]
+    }
+    Example data multiple
     {
         "products": [
             {
@@ -24,7 +31,14 @@ class KachingRecommendationTransformation {
     }
     */
     async transformToRecommendationImportData(input, callback) {
-        await callback(_.cloneDeep(input));
+        if (_.isNil(input.product_id)) {
+            for (const product of input.products) {
+                await callback(product);
+            }
+        }
+        else {
+            await callback(_.cloneDeep(input));
+        }
     }
 }
 exports.KachingRecommendationTransformation = KachingRecommendationTransformation;
