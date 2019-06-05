@@ -1,6 +1,7 @@
 import * as express from "express"
-import * as parse from "csv-parse"
 import { RecommendationTransformation, ProductRecommendation } from "./RecommendationTransformation"
+
+const parse = require("csv-parse")
 
 export class RaptorRecommendationTransformation implements RecommendationTransformation {
 
