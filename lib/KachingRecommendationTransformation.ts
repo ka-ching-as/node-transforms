@@ -32,7 +32,11 @@ export class KachingRecommendationTransformation implements RecommendationTransf
                 await callback(product)
             }
         } else {
-            await callback(_.cloneDeep(input))
+            const result = {
+                product_id: input.product_id,
+                recommendations: input.recommendations
+            }
+            await callback(result)
         }
    }
 }

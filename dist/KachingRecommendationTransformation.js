@@ -37,7 +37,11 @@ class KachingRecommendationTransformation {
             }
         }
         else {
-            await callback(_.cloneDeep(input));
+            const result = {
+                product_id: input.product_id,
+                recommendations: input.recommendations
+            };
+            await callback(result);
         }
     }
 }
