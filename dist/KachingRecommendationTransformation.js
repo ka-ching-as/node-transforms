@@ -9,8 +9,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = __importStar(require("lodash"));
 class KachingRecommendationTransformation {
+    // This is "best effort" - moving forward we should transition clients to specify the transform as a query parameter
     canHandleRequest(request) {
-        return !_.isNil(request.body.products);
+        return !_.isNil(request.body.products) || !_.isNil(request.body.product_id);
     }
     /* Example data
     {

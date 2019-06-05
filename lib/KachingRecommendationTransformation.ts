@@ -4,8 +4,9 @@ import { RecommendationTransformation, ProductRecommendation } from "./Recommend
 
 export class KachingRecommendationTransformation implements RecommendationTransformation {
 
+    // This is "best effort" - moving forward we should transition clients to specify the transform as a query parameter
     canHandleRequest(request: express.Request): boolean {
-        return !_.isNil(request.body.products)
+        return !_.isNil(request.body.products) || !_.isNil(request.body.product_id)
     }
 
     /* Example data
