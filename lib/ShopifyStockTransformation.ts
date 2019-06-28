@@ -100,9 +100,9 @@ export class ShopifyStockTransformation implements StockTransformation {
         if (_.isNil(input) || !_.isObject(input)) {
             return false
         }
-        const inventoryIdValid = input.inventory_item_id && typeof(input.inventory_item_id) === "number"
-        const locationIdValid = input.location_id && typeof(input.location_id) === "number"
-        const availableValid = input.available !== undefined && typeof(input.available) === "number"
+        const inventoryIdValid = (input as any).inventory_item_id && typeof((input as any).inventory_item_id) === "number"
+        const locationIdValid = (input as any).location_id && typeof((input as any).location_id) === "number"
+        const availableValid = (input as any).available !== undefined && typeof((input as any).available) === "number"
         return inventoryIdValid && locationIdValid && availableValid
     }
 
@@ -125,10 +125,10 @@ export class ShopifyStockTransformation implements StockTransformation {
         if (_.isNil(data) || !_.isObject(data)) {
             return false
         }
-        const inventoryItemExist = data.inventoryItem && typeof(data.inventoryItem) === "object"
-        const variantExist = data.inventoryItem.variant && typeof(data.inventoryItem.variant) === "object"
-        const productExist = data.inventoryItem.variant.product && typeof(data.inventoryItem.variant.product) === "object"
-        const totalVariantsIsValid = data.inventoryItem.variant.product.totalVariants && typeof(data.inventoryItem.variant.product.totalVariants) === "number"
+        const inventoryItemExist = (data as any).inventoryItem && typeof((data as any).inventoryItem) === "object"
+        const variantExist = (data as any).inventoryItem.variant && typeof((data as any).inventoryItem.variant) === "object"
+        const productExist = (data as any).inventoryItem.variant.product && typeof((data as any).inventoryItem.variant.product) === "object"
+        const totalVariantsIsValid = (data as any).inventoryItem.variant.product.totalVariants && typeof((data as any).inventoryItem.variant.product.totalVariants) === "number"
         return inventoryItemExist && variantExist && productExist && totalVariantsIsValid
     }
 
