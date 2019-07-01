@@ -18,7 +18,7 @@ export class KachingStockTransformation implements StockTransformation {
                     await callback(entry)
                 } else if (_.isObject(product)) {
                     for (const variantId in product) {
-                        const variantCount = product[variantId]
+                        const variantCount = (product as any)[variantId]
     
                         if (typeof variantCount !== "number") {
                             console.warn(`Invalid kaching stock import product object: ${JSON.stringify(product)}`)
