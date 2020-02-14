@@ -3,11 +3,6 @@ import { ProductTransformation } from "./ProductTransformation";
 export declare class ShopifyProductTransformation implements ProductTransformation {
     isDeletionRequest(request: express.Request): boolean;
     productIdsForDeletion(request: express.Request): string[];
-    /**
-     * @Method: Outputs and returns 'Hello, World!'.
-     * @Param {}
-     * @Return {string}
-     */
     transformProduct(input: any): any;
     transformAsSimpleProduct(input: any, product: any): void;
     transformAsVariantProduct(input: any, product: any): void;

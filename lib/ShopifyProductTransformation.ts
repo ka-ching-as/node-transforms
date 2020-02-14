@@ -26,11 +26,6 @@ export class ShopifyProductTransformation implements ProductTransformation {
         return [input.id]
     }
 
-    /**
-     * @Method: Outputs and returns 'Hello, World!'.
-     * @Param {}
-     * @Return {string}
-     */
     transformProduct(input: any): any {
         const requiredFields = ["id", "title"]
 
