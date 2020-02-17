@@ -31,7 +31,7 @@ export class ShopifyStockTransformation implements StockTransformation {
         }
 
         const shopifyId = configuration.shopify_id
-        if (!shopifyId || typeof shopifyId !== "string") {
+        if (!shopifyId  || typeof shopifyId !== "string") {
             console.error(`Missing or invalid shopify id on configuration ${JSON.stringify(configuration)}`)
             await callback(undefined)
             return
@@ -45,7 +45,7 @@ export class ShopifyStockTransformation implements StockTransformation {
         }
 
         const client = new ApolloClient({
-            uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
+            uri: `https://${shopifyId}.myshopify.com/admin/api/2020-01/graphql.json`,
             request: async operation => {
                 operation.setContext({
                     headers: {
@@ -80,11 +80,10 @@ export class ShopifyStockTransformation implements StockTransformation {
             const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId)
             console.info(`Resulting stock queue element: ${JSON.stringify(queueElement)}`)
 
-            callback(queueElement)
+            return callback(queueElement)
         } catch (error) {
             console.log(error)
-            callback(undefined)
-            return
+            return callback(undefined)
         }
     }
 

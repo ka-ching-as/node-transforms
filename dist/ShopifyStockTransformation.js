@@ -40,7 +40,7 @@ class ShopifyStockTransformation {
             return;
         }
         const client = new apollo_boost_1.default({
-            uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
+            uri: `https://${shopifyId}.myshopify.com/admin/api/2020-01/graphql.json`,
             request: async (operation) => {
                 operation.setContext({
                     headers: {
@@ -71,12 +71,11 @@ class ShopifyStockTransformation {
             }
             const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId);
             console.info(`Resulting stock queue element: ${JSON.stringify(queueElement)}`);
-            callback(queueElement);
+            return callback(queueElement);
         }
         catch (error) {
             console.log(error);
-            callback(undefined);
-            return;
+            return callback(undefined);
         }
     }
     /* Example structure
