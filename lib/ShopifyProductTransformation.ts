@@ -23,7 +23,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
                 throw new Error(`Missing field '${field}'`)
             }
         }
-        return [input.id]
+        return [String(input.id)]
     }
 
     transformProduct(input: any): any {
