@@ -30,7 +30,7 @@
     "graphql": "14.4.0",
     "graphql-tag": "2.10.1",
     "html-to-text": "5.1.1",
-    "lodash": "4.17.15"
+    "lodash": "4.17.21"
   },
   "devDependencies": {
     "@types/csv-parse": "1.2.2",
