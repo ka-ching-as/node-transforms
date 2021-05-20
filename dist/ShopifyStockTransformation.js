@@ -40,7 +40,7 @@ class ShopifyStockTransformation {
             return;
         }
         const client = new apollo_boost_1.default({
-            uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
+            uri: `https://${shopifyId}.myshopify.com/admin/api/2021-04/graphql.json`,
             request: async (operation) => {
                 operation.setContext({
                     headers: {

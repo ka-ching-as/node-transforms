@@ -45,7 +45,7 @@ export class ShopifyStockTransformation implements StockTransformation {
         }
 
         const client = new ApolloClient({
-            uri: `https://${shopifyId}.myshopify.com/admin/api/2019-04/graphql.json`,
+            uri: `https://${shopifyId}.myshopify.com/admin/api/2021-04/graphql.json`,
             request: async operation => {
                 operation.setContext({
                     headers: {
