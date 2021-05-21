@@ -71,12 +71,11 @@ class ShopifyStockTransformation {
             }
             const queueElement = this.stockQueueElement(inventoryLevelUpdate, result.data, stockLocationId);
             console.info(`Resulting stock queue element: ${JSON.stringify(queueElement)}`);
-            callback(queueElement);
+            return callback(queueElement);
         }
         catch (error) {
             console.log(error);
-            callback(undefined);
-            return;
+            return callback(undefined);
         }
     }
     /* Example structure

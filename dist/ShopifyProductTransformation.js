@@ -26,13 +26,8 @@ class ShopifyProductTransformation {
                 throw new Error(`Missing field '${field}'`);
             }
         }
-        return [input.id];
+        return [String(input.id)];
     }
-    /**
-     * @Method: Outputs and returns 'Hello, World!'.
-     * @Param {}
-     * @Return {string}
-     */
     transformProduct(input) {
         const requiredFields = ["id", "title"];
         for (const field of requiredFields) {
