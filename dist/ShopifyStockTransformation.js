@@ -48,7 +48,8 @@ class ShopifyStockTransformation {
         const inventoryIdValid = input.inventory_item_id && typeof (input.inventory_item_id) === "number";
         const locationIdValid = input.location_id && typeof (input.location_id) === "number";
         const availableValid = input.available !== undefined && typeof (input.available) === "number";
-        return inventoryIdValid && locationIdValid && availableValid;
+        const productIdValid = input.product_id !== undefined && typeof (input.product_id) === "string";
+        return inventoryIdValid && locationIdValid && availableValid && productIdValid;
     }
     stockQueueElement(inventoryLevelUpdate, stockLocationId) {
         const result = {};

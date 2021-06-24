@@ -1,8 +1,6 @@
 // tslint:disable-next-line:no-import-side-effect
 import "cross-fetch/polyfill"
 import * as _ from "lodash"
-import * as path from "path"
-import ApolloClient, { gql } from "apollo-boost"
 import { StockQueueEntry, StockTransformation } from "./StockTransformation"
 
 interface InventoryLevelUpdate {
@@ -55,7 +53,8 @@ export class ShopifyStockTransformation implements StockTransformation {
         const inventoryIdValid = (input as any).inventory_item_id && typeof ((input as any).inventory_item_id) === "number"
         const locationIdValid = (input as any).location_id && typeof ((input as any).location_id) === "number"
         const availableValid = (input as any).available !== undefined && typeof ((input as any).available) === "number"
-        return inventoryIdValid && locationIdValid && availableValid
+        const productIdValid = (input as any).product_id !== undefined && typeof ((input as any).product_id) === "string"
+        return inventoryIdValid && locationIdValid && availableValid && productIdValid
     }
 
     stockQueueElement(inventoryLevelUpdate: InventoryLevelUpdate, stockLocationId: string): StockQueueEntry {
