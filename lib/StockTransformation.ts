@@ -6,5 +6,5 @@ export interface StockQueueEntry {
 }
 
 export interface StockTransformation {
-    transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement?: StockQueueEntry) => Promise<void>): Promise<void> 
+    transformToStockImportData(input: any, configuration: any): Promise<StockQueueEntry | undefined> 
 }

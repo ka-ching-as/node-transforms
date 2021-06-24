@@ -2,7 +2,7 @@ import * as _ from "lodash"
 import { StockQueueEntry, StockTransformation } from "./StockTransformation"
 
 export class KachingStockTransformation implements StockTransformation {
-    async transformToStockImportData(input: any, configuration: any, callback: (stockQueueElement: any) => Promise<void>): Promise<void> {
+    async transformToStockImportData(input: any, configuration: any): Promise<any> {
         for (const locationId in input) {
             const products = input[locationId]
     
@@ -14,8 +14,7 @@ export class KachingStockTransformation implements StockTransformation {
                     entry.count = product
                     entry.location_id = locationId
                     entry.product_id = productId
-
-                    await callback(entry)
+                    return entry
                 } else if (_.isObject(product)) {
                     for (const variantId in product) {
                         const variantCount = (product as any)[variantId]
@@ -30,8 +29,7 @@ export class KachingStockTransformation implements StockTransformation {
                         entry.location_id = locationId
                         entry.product_id = productId
                         entry.variant_id = variantId
-    
-                        await callback(entry)
+                        return entry
                     }
                 }
             }

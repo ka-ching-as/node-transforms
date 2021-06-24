@@ -245,7 +245,7 @@ export class ShopifyProductTransformation implements ProductTransformation {
         return true
     }
 
-    async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>) {
+    async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[]): Promise<any> {
         const product = this.transformProduct(input)
         const metadata = { markets: {} as any, channels: {} as any }
         for (const channel of defaultChannels) {
@@ -256,6 +256,6 @@ export class ShopifyProductTransformation implements ProductTransformation {
         }
 
         const obj = { product: product, metadata: metadata }
-        await callback(obj)
+        return obj
     }
 }

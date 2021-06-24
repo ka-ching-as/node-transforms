@@ -20,9 +20,9 @@ class KachingProductTransformation {
         }
         return [];
     }
-    async transformRepoProduct(input, defaultChannels, defaultMarkets, callback) {
+    async transformRepoProduct(input, defaultChannels, defaultMarkets) {
         if (input.product) {
-            await callback(input);
+            return input;
         }
         else if (input.products) {
             for (const key in input.products) {
@@ -45,7 +45,7 @@ class KachingProductTransformation {
                 if (input.shops) {
                     obj["shops"] = input.shops;
                 }
-                await callback(obj);
+                return obj;
             }
         }
         else {

@@ -9,7 +9,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = __importStar(require("lodash"));
 class KachingStockTransformation {
-    async transformToStockImportData(input, configuration, callback) {
+    async transformToStockImportData(input, configuration) {
         for (const locationId in input) {
             const products = input[locationId];
             for (const productId in products) {
@@ -19,7 +19,7 @@ class KachingStockTransformation {
                     entry.count = product;
                     entry.location_id = locationId;
                     entry.product_id = productId;
-                    await callback(entry);
+                    return entry;
                 }
                 else if (_.isObject(product)) {
                     for (const variantId in product) {
@@ -33,7 +33,7 @@ class KachingStockTransformation {
                         entry.location_id = locationId;
                         entry.product_id = productId;
                         entry.variant_id = variantId;
-                        await callback(entry);
+                        return entry;
                     }
                 }
             }

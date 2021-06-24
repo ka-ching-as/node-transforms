@@ -221,7 +221,7 @@ class ShopifyProductTransformation {
         }
         return true;
     }
-    async transformRepoProduct(input, defaultChannels, defaultMarkets, callback) {
+    async transformRepoProduct(input, defaultChannels, defaultMarkets) {
         const product = this.transformProduct(input);
         const metadata = { markets: {}, channels: {} };
         for (const channel of defaultChannels) {
@@ -231,7 +231,7 @@ class ShopifyProductTransformation {
             metadata.markets[market] = true;
         }
         const obj = { product: product, metadata: metadata };
-        await callback(obj);
+        return obj;
     }
 }
 exports.ShopifyProductTransformation = ShopifyProductTransformation;

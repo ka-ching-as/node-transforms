@@ -7,5 +7,5 @@ export declare class ShopifyProductTransformation implements ProductTransformati
     transformAsSimpleProduct(input: any, product: any): void;
     transformAsVariantProduct(input: any, product: any): void;
     isSimpleProduct(input: any): boolean;
-    transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>): Promise<void>;
+    transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[]): Promise<any>;
 }

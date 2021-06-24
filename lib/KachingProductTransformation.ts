@@ -23,9 +23,9 @@ export class KachingProductTransformation implements ProductTransformation {
         return []
     }
 
-    async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[], callback: (product: any) => Promise<void>) {
+    async transformRepoProduct(input: any, defaultChannels: string[], defaultMarkets: string[]): Promise<any> {
         if (input.product) {
-            await callback(input)
+            return input
         } else if (input.products) {
             for (const key in input.products) {
                 const product = input.products[key]
@@ -46,7 +46,7 @@ export class KachingProductTransformation implements ProductTransformation {
                 if (input.shops) {
                     obj["shops"] = input.shops
                 }
-                await callback(obj)
+                return obj
             }
         } else {
             throw new Error("Bad request - missing product or products key in body.")
